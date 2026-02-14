@@ -3,7 +3,6 @@ body {
     margin: 0;
 }
 
-
 .back-blocks{
     display: grid;
     grid-template-columns: 300px 2fr;
@@ -12,8 +11,8 @@ body {
     gap: 20px;
     padding: 8px;
     grid-template-areas:
-    "blocks-area work-area"
-    "blocks-area output-area"
+        "blocks-area work-area"
+        "blocks-area output-area";
 }
 
 .back-blocks > *{
@@ -23,18 +22,17 @@ body {
 .Blocks-Area{
     grid-area: blocks-area;
     background-color: #1A946f; 
-    /* Тут настройка для всех наследников Blocks-Area */
     display: flex;
     gap: 10px;
     padding: 10px;
     flex-direction: column;
-
 }
 
 .Work-Block{
     grid-area: work-area;
     background-color: #88D398;
-
+    position: relative;
+    overflow: hidden;
 }
 
 .Output-Block{
@@ -43,12 +41,35 @@ body {
 }
 
 .block{
-    background: rgb(210, 74, 74);
+    background: rgb(76, 227, 109);
     width: 100%;
     border-radius: 12px;
     padding: 30px 20px;
     cursor: pointer;
     text-align: center;
     box-sizing: border-box;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.45);
+    transition: transform 0.1s;
 }
 
+.block:hover {
+    transform: scale(1.02);
+}
+
+.block.instance {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    width: auto;
+    min-width: 150px;
+    z-index: 10;
+    transition: none;
+}
+
+.block.instance:active {
+    cursor: grabbing;
+}
+
+.block.instance:hover {
+    transform: none;
+}
