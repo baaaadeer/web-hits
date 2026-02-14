@@ -1,0 +1,54 @@
+body {
+    background-color: #F3E8D2;
+    margin: 0;
+}
+
+
+.back-blocks{
+    display: grid;
+    grid-template-columns: 300px 2fr;
+    grid-template-rows: 2fr 1fr;
+    height: 95vh;
+    gap: 20px;
+    padding: 8px;
+    grid-template-areas:
+    "blocks-area work-area"
+    "blocks-area output-area"
+}
+
+.back-blocks > *{
+    border-radius: 20px;
+}
+
+.Blocks-Area{
+    grid-area: blocks-area;
+    background-color: #1A946f; 
+    /* Тут настройка для всех наследников Blocks-Area */
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    flex-direction: column;
+
+}
+
+.Work-Block{
+    grid-area: work-area;
+    background-color: #88D398;
+
+}
+
+.Output-Block{
+    grid-area: output-area;
+    background-color: #114B5F;
+}
+
+.block{
+    background: rgb(210, 74, 74);
+    width: 100%;
+    border-radius: 12px;
+    padding: 30px 20px;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box;
+}
+
