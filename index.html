@@ -8,17 +8,22 @@
     <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.27/dist/interact.min.js"></script>
 </head>
 <body>
-    <div class="back-blocks">
-        <div class="Work-Block back-Block"></div>
-        <div class="Output-Block back-Block"></div>
-        <div class="Blocks-Area back-Block">
-            <div class="block">Создать переменную</div>
-            <div class="block">Создать массив</div>
-            <div class="block">Print</div>
-            <div class="block">Input</div>
-            <div class="block">Создать цикл for</div>
+    <div class="back-block">
+        <div class = "Work-Block" id = "Work-Area">
+            <button id="runButton">Run</button>
         </div>
+
+        <div class = "Blocks-Area" id="menu">
+            Blocks
+            <div class="block" data-type="variable">Создать переменную</div>
+            <div class="block" data-type="operation">Арифметическая операция</div>
+            <div class="block" data-type="operatorIf">If</div>
+            <div class="block" data-type="operatorElse">Else</div>
+        </div>
+
+        <div class="Output-Area" id="output">Output</div>
     </div>
-    <script src="scripts/main.js"></script>
+
+    <script type="module" src="scripts/block.js"></script>
 </body>
 </html>

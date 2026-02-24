@@ -1,47 +1,43 @@
 body {
-    background-color: #F3E8D2;
     margin: 0;
+    color: white;;
 }
 
-.back-blocks{
+.back-block{
     display: grid;
     grid-template-columns: 300px 2fr;
-    grid-template-rows: 2fr 1fr;
-    height: 95vh;
-    gap: 20px;
-    padding: 8px;
+    grid-template-rows: 4fr 1fr;
+    height: 100vh;
     grid-template-areas:
-        "blocks-area work-area"
-        "blocks-area output-area";
+        "Blocks-Area Work-Block"
+        "Blocks-Area Output-Area";
 }
 
-.back-blocks > *{
-    border-radius: 20px;
-}
 
 .Blocks-Area{
-    grid-area: blocks-area;
-    background-color: #1A946f; 
+    grid-area: Blocks-Area;
+    background-color: #253745;
     display: flex;
     gap: 10px;
     padding: 10px;
     flex-direction: column;
+    text-align: center;
 }
 
 .Work-Block{
-    grid-area: work-area;
-    background-color: #88D398;
+    grid-area: Work-Block;
+    background-color: #CCD0CF;
     position: relative;
     overflow: hidden;
 }
 
-.Output-Block{
-    grid-area: output-area;
-    background-color: #114B5F;
+.Output-Area{
+    grid-area: Output-Area;
+    background-color: #4A5C6A;
 }
 
 .block{
-    background: rgb(76, 227, 109);
+    background: #06141b5f;
     width: 100%;
     border-radius: 12px;
     padding: 30px 20px;
@@ -50,6 +46,8 @@ body {
     box-sizing: border-box;
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.45);
     transition: transform 0.1s;
+    touch-action: none;
+    user-select: none;
 }
 
 .block:hover {
@@ -72,4 +70,9 @@ body {
 
 .block.instance:hover {
     transform: none;
+}
+
+#runButton{
+    cursor: pointer;
+    font-weight: bold;
 }
