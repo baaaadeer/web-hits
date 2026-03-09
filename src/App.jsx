@@ -1,7 +1,7 @@
 import "./App.css";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ReactFlow, Background, Controls, MiniMap, useNodesState, useEdgesState, addEdge } from "@xyflow/react";
-import { VariableBlock, AssignBlock, IfBlock,WhileBlock,ForBlock,ArrayBlock} from "./renderNode";
+import { VariableBlock, AssignBlock, IfBlock,WhileBlock,ForBlock,ArrayBlock,CoutBlock,ArifmeticBlock} from "./renderNode";
 import { runCode } from "./interpreter/interpreter";
 
 import "@xyflow/react/dist/style.css";
@@ -22,6 +22,8 @@ export default function App() {
       whileBl: WhileBlock,
       forBl: ForBlock,
       array: ArrayBlock,
+      cout: CoutBlock,
+      arifmetic: ArifmeticBlock,
     }),
     []
   );
@@ -47,6 +49,8 @@ export default function App() {
     if (type==="whileBl") parameters = {condition: ""};
     if (type==="forBl") parameters = {variable: "i", endCondition: "i<100", step: "i+=1"};
     if (type==="array") parameters = {name: "a", elements: ""};
+    if (type==="cout") parameters = {};
+    if (type==="arifmetic") parameters ={operation: "+"};
 
     const newNode = {
       id: crypto.randomUUID(),
@@ -94,7 +98,13 @@ export default function App() {
         <div className="block" onClick={()=>addBlock("array")}>
           Массив
         </div>
-        
+        <div className="block" onClick={()=>addBlock("cout")}>
+          Вывод
+        </div>
+        <div className="block" onClick={()=>addBlock("arifmetic")}>
+          Арифм.Операция
+        </div>
+
         
         <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>
           <button onClick={handleRun} style={{ padding: "10px", fontWeight: "bold", background: "#4CAF50", color: "white", border: "none" }}>
