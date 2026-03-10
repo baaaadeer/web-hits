@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { ReactFlow, Background, Controls, MiniMap, useNodesState, useEdgesState, addEdge } from "@xyflow/react";
 import { VariableBlock, AssignBlock, IfBlock,WhileBlock,ForBlock,ArrayBlock,CoutBlock,ArifmeticBlock} from "./renderNode";
 import { runCode } from "./interpreter/interpreter";
+import { getBubbleSortBlocks } from "./examples/bubbleSort";
 
 import "@xyflow/react/dist/style.css";
 
@@ -65,15 +66,24 @@ export default function App() {
   }
   function handleRun() {
     try {
+      console.log("Запуск интерпретатора, узлы:", nodes.length, "рёбра:", edges.length);
       const result = runCode(nodes, edges);
+      console.log("Результат:", result);
       setLogs(result);
     } catch (error) {
+      console.error("Ошибка при выполнении:", error);
       setLogs(["Критическая ошибка интерпретатора: " + error.message]);
     }
   }
 
   function handleClear() {
     setLogs([]);
+  }
+
+  function loadBubbleSort() {
+    const { nodes: sortNodes, edges: sortEdges } = getBubbleSortBlocks();
+    setNodes(sortNodes);
+    setEdges(sortEdges);
   }
 
   return (
@@ -107,8 +117,11 @@ export default function App() {
 
         
         <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>
+          <button onClick={loadBubbleSort} style={{ padding: "10px", fontWeight: "bold", background: "#2196F3", color: "white", border: "none" }}>
+            Сортировка пузырьком
+          </button>
           <button onClick={handleRun} style={{ padding: "10px", fontWeight: "bold", background: "#4CAF50", color: "white", border: "none" }}>
-            ▶ Запустить
+            Запустить
           </button>
           <button onClick={handleClear} style={{ padding: "10px", background: "#f44336", color: "white", border: "none" }}>
             Очистить
