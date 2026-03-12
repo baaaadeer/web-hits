@@ -54,22 +54,8 @@ export function IfBlock({id,data}){
     return (
         <BaseBlock title="If">
             <div className="row">
-                <span>Первый</span>
-                <input value={parametr.firstVar ?? ""} onChange={(element)=> change({firstVar: element.target.value})} placeholder="a"/>
-            </div>
-            <div className="row">
-                <span>Условие</span>
-                <select value={parametr.operator ?? ">"} onChange={(element)=> change({operator: element.target.value})}>
-                    <option value=">">{">"}</option>
-                    <option value=">=">{">="}</option>
-                    <option value="<=">{"<="}</option>
-                    <option value="<">{"<"}</option>
-                    <option value="==">{"=="}</option>
-                </select>
-            </div>
-            <div className="row">
-                <span>Второй</span>
-                <input value={parametr.secondVar ?? ""} onChange={(element)=> change({secondVar: element.target.value})} placeholder="b"/>
+                <span>Выражение</span>
+                <input value={parametr.expression ?? ""} onChange={(element)=> change({expression: element.target.value})} placeholder="a"/>
             </div>
             <Handle type="target" position={Position.Left}/>
             <Handle 
