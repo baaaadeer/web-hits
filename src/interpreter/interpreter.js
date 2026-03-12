@@ -499,6 +499,26 @@ export class Interpreter {
   evaluateTokens(tokens) {
     if (tokens.length === 0) return 0;
 
+    while (tokens.includes('(')) {
+      const openIndex = tokens.lastIndexOf('(');
+      let closeIndex = openIndex + 1;
+      let depth = 1;
+
+      while (closeIndex < tokens.length && depth > 0) {
+        if (tokens[closeIndex] === '(') depth++;
+        else if (tokens[closeIndex] === ')') depth--;
+        if (depth > 0) closeIndex++;
+      }
+
+      if (depth !== 0) {
+        throw new Error("Несбалансированные скобки");
+      }
+
+      const innerTokens = tokens.slice(openIndex + 1, closeIndex);
+      const innerResult = this.evaluateTokens(innerTokens);
+      tokens.splice(openIndex, closeIndex - openIndex + 1, innerResult);
+    }
+
     let i = 0;
     while (i < tokens.length) {
       if (tokens[i] === '*' || tokens[i] === '/') {
