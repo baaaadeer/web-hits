@@ -123,6 +123,10 @@ export function ArrayBlock({id,data}){
                 <input value={parametr.name ?? ""} onChange={(element)=> change({name: element.target.value})} placeholder="i=0"/>
             </div>
             <div className="row">
+                <span>Длина</span>
+                <input value={parametr.len ?? ""} onChange={(element)=> change({len: element.target.value})} placeholder="0"/>
+            </div>
+            <div className="row">
                 <span>Элементы</span>
                 <input value={parametr.elements ?? ""} onChange={(element)=> change({elements: element.target.value})}/>
             </div>

@@ -46,10 +46,10 @@ export default function App() {
     let parameters = {};
     if (type === "variable") parameters = { name: "x" };
     if (type === "assign") parameters = { target: "x", value: "0" };
-    if (type === "operatorIf") parameters = { expression: "a>b" };
+    if (type === "operatorIf") parameters = {expression: ""};
     if (type==="whileBl") parameters = {condition: ""};
     if (type==="forBl") parameters = {variable: "i", endCondition: "i<100", step: "i+=1"};
-    if (type==="array") parameters = {name: "a", elements: ""};
+    if (type==="array") parameters = {name: "a",len: "", elements: ""};
     if (type==="cout") parameters = {};
     if (type==="arifmetic") parameters ={operation: "+"};
 
