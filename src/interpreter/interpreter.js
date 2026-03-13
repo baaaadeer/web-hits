@@ -5,14 +5,17 @@ export class Interpreter {
     this.memory = {};
     this.outputLog = [];
     this.adjacencyList = {};
+    this.reverseAdjacencyList = {};
     this.totalIterations = 0;
     this.maxTotalIterations = 10000;
+    this.executedNodes = new Set();
   }
 
   run() {
     this.outputLog = [];
     this.memory = {};
     this.totalIterations = 0;
+    this.executedNodes = new Set();
     this.buildGraph();
 
     const startNodes = this.findStartNodes();
@@ -27,8 +30,10 @@ export class Interpreter {
 
   buildGraph() {
     this.adjacencyList = {};
+    this.reverseAdjacencyList = {};
     this.nodes.forEach(node => {
       this.adjacencyList[node.id] = [];
+      this.reverseAdjacencyList[node.id] = [];
     });
 
     this.edges.forEach(edge => {
@@ -39,6 +44,7 @@ export class Interpreter {
           targetId: edge.target,
           handle: handle
         });
+        this.reverseAdjacencyList[edge.target].push(edge.source);
       }
     });
   }
@@ -58,7 +64,24 @@ export class Interpreter {
     if (visited.has(node.id)) {
       return;
     }
+    
+    const predecessors = this.reverseAdjacencyList[node.id] || [];
+    if (predecessors.length > 0) {
+      const allExecuted = predecessors.every(p => this.executedNodes.has(p));
+      if (!allExecuted) {
+        for (const predId of predecessors) {
+          if (!this.executedNodes.has(predId)) {
+            const predNode = this.nodes.find(n => n.id === predId);
+            if (predNode) this.executeNode(predNode, visited);
+          }
+        }
+        const stillNotExecuted = predecessors.some(p => !this.executedNodes.has(p));
+        if (stillNotExecuted) return;
+      }
+    }
+    
     visited.add(node.id);
+    this.executedNodes.add(node.id);
 
     const type = node.type;
     const data = node.data?.parameters || {};
@@ -134,7 +157,7 @@ export class Interpreter {
   }
 
   handleIf(node, data, visited) {
-    const expression = data.expression || '';
+    const expression = data.expression || data.condition || '';
     const conditionMet = this.evaluateCondition(expression);
 
     const nextSteps = this.adjacencyList[node.id] || [];
@@ -245,11 +268,9 @@ export class Interpreter {
 
   executeNodeInFor(node, forNodeId, iterationVisited) {
     if (!node) return;
-    
-    // Если это узел for цикла, просто возвращаемся (цикл управляется handleFor)
+
     if (node.id === forNodeId) return;
-    
-    // Не проверяем visited для узла цикла - разрешаем повторное посещение
+
     if (iterationVisited.has(node.id) && node.type !== 'forBl') return;
 
     iterationVisited.add(node.id);
@@ -295,7 +316,6 @@ export class Interpreter {
     const nextSteps = this.adjacencyList[currentNodeId] || [];
 
     for (const step of nextSteps) {
-      // Разрешаем возврат к узлу цикла (для замыкания цикла внутри тела)
       if (step.handle === 'exit') continue;
 
       const nextNode = this.nodes.find(n => n.id === step.targetId);
@@ -370,6 +390,21 @@ export class Interpreter {
   evaluateCondition(condition) {
     if (!condition || condition.trim() === '') return false;
 
+    const expr = condition.trim();
+
+    const orPositions = this.findLogicalOperators(expr, ['||', ' or ']);
+    const andPositions = this.findLogicalOperators(expr, ['&&', ' and ']);
+
+    if (orPositions.length > 0) {
+      const parts = this.splitByOperators(expr, ['||', ' or ']);
+      return parts.some(part => this.evaluateCondition(part.trim()));
+    }
+
+    if (andPositions.length > 0) {
+      const parts = this.splitByOperators(expr, ['&&', ' and ']);
+      return parts.every(part => this.evaluateCondition(part.trim()));
+    }
+
     const operators = ['>=', '<=', '==', '!=', '>', '<'];
     for (const op of operators) {
       const index = condition.indexOf(op);
@@ -393,6 +428,43 @@ export class Interpreter {
 
     const value = this.evaluateArithmeticExpression(condition);
     return !!value;
+  }
+
+  findLogicalOperators(expr, operators) {
+    const positions = [];
+    for (const op of operators) {
+      let index = 0;
+      while ((index = expr.indexOf(op, index)) !== -1) {
+        positions.push({ index, operator: op });
+        index += op.length;
+      }
+    }
+    return positions.sort((a, b) => a.index - b.index);
+  }
+
+  splitByOperators(expr, operators) {
+    const parts = [];
+    let lastIndex = 0;
+    let i = 0;
+
+    while (i < expr.length) {
+      let found = false;
+      for (const op of operators) {
+        if (expr.substring(i, i + op.length) === op) {
+          parts.push(expr.substring(lastIndex, i));
+          lastIndex = i + op.length;
+          i = lastIndex;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        i++;
+      }
+    }
+
+    parts.push(expr.substring(lastIndex));
+    return parts;
   }
 
   executeStep(step) {
