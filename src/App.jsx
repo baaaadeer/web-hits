@@ -46,7 +46,7 @@ export default function App() {
     let parameters = {};
     if (type === "variable") parameters = { name: "x" };
     if (type === "assign") parameters = { target: "x", value: "0" };
-    if (type === "operatorIf") parameters = { firstVar: "a", operator: ">", secondVar: "b" };
+    if (type === "operatorIf") parameters = { expression: "a>b" };
     if (type==="whileBl") parameters = {condition: ""};
     if (type==="forBl") parameters = {variable: "i", endCondition: "i<100", step: "i+=1"};
     if (type==="array") parameters = {name: "a", elements: ""};

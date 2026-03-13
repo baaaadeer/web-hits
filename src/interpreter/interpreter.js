@@ -134,22 +134,8 @@ export class Interpreter {
   }
 
   handleIf(node, data, visited) {
-    const { firstVar, operator, secondVar } = data;
-
-    const val1 = this.evaluateExpression(firstVar);
-    const val2 = this.evaluateExpression(secondVar);
-
-    let conditionMet = false;
-
-    switch (operator) {
-      case '>': conditionMet = val1 > val2; break;
-      case '<': conditionMet = val1 < val2; break;
-      case '==': conditionMet = val1 == val2; break;
-      case '>=': conditionMet = val1 >= val2; break;
-      case '<=': conditionMet = val1 <= val2; break;
-      case '!=': conditionMet = val1 != val2; break;
-      default: throw new Error(`Неизвестный оператор: ${operator}`);
-    }
+    const expression = data.expression || '';
+    const conditionMet = this.evaluateCondition(expression);
 
     const nextSteps = this.adjacencyList[node.id] || [];
 
@@ -258,8 +244,13 @@ export class Interpreter {
   }
 
   executeNodeInFor(node, forNodeId, iterationVisited) {
-    if (!node || node.id === forNodeId) return;
-    if (iterationVisited.has(node.id)) return;
+    if (!node) return;
+    
+    // Если это узел for цикла, просто возвращаемся (цикл управляется handleFor)
+    if (node.id === forNodeId) return;
+    
+    // Не проверяем visited для узла цикла - разрешаем повторное посещение
+    if (iterationVisited.has(node.id) && node.type !== 'forBl') return;
 
     iterationVisited.add(node.id);
 
@@ -304,7 +295,7 @@ export class Interpreter {
     const nextSteps = this.adjacencyList[currentNodeId] || [];
 
     for (const step of nextSteps) {
-      if (step.targetId === forNodeId) continue;
+      // Разрешаем возврат к узлу цикла (для замыкания цикла внутри тела)
       if (step.handle === 'exit') continue;
 
       const nextNode = this.nodes.find(n => n.id === step.targetId);
@@ -316,22 +307,8 @@ export class Interpreter {
   }
 
   handleIfInFor(node, data, forNodeId, iterationVisited) {
-    const { firstVar, operator, secondVar } = data;
-
-    const val1 = this.evaluateExpression(firstVar);
-    const val2 = this.evaluateExpression(secondVar);
-
-    let conditionMet = false;
-
-    switch (operator) {
-      case '>': conditionMet = val1 > val2; break;
-      case '<': conditionMet = val1 < val2; break;
-      case '==': conditionMet = val1 == val2; break;
-      case '>=': conditionMet = val1 >= val2; break;
-      case '<=': conditionMet = val1 <= val2; break;
-      case '!=': conditionMet = val1 != val2; break;
-      default: throw new Error(`Неизвестный оператор: ${operator}`);
-    }
+    const expression = data.expression || '';
+    const conditionMet = this.evaluateCondition(expression);
 
     const nextSteps = this.adjacencyList[node.id] || [];
 
@@ -456,6 +433,10 @@ export class Interpreter {
 
     const expr = expression.trim();
 
+    const arrayAccessMatch = expr.match(/^([a-zA-Z_]\w*)\[(.+)\]$/);
+    if (arrayAccessMatch) {
+      return this.evaluateExpression(expr);
+    }
     if (/^[a-zA-Z_]\w*$/.test(expr)) {
       return this.evaluateExpression(expr);
     }
@@ -473,7 +454,7 @@ export class Interpreter {
         continue;
       }
 
-      if (char === '+' || char === '-' || char === '*' || char === '/' || char === '(' || char === ')') {
+      if (char === '+' || char === '-' || char === '*' || char === '/' || char === '(' || char === ')' || char === '[' || char === ']') {
         tokens.push(char);
         i++;
         continue;
@@ -482,7 +463,7 @@ export class Interpreter {
       let token = '';
       while (i < expr.length) {
         const c = expr[i];
-        if (c === ' ' || c === '+' || c === '-' || c === '*' || c === '/' || c === '(' || c === ')') {
+        if (c === ' ' || c === '+' || c === '-' || c === '*' || c === '/' || c === '(' || c === ')' || c === '[' || c === ']') {
           break;
         }
         token += c;
@@ -498,6 +479,39 @@ export class Interpreter {
 
   evaluateTokens(tokens) {
     if (tokens.length === 0) return 0;
+
+    while (tokens.includes('[')) {
+      const openIndex = tokens.lastIndexOf('[');
+      let closeIndex = openIndex + 1;
+      let depth = 1;
+
+      while (closeIndex < tokens.length && depth > 0) {
+        if (tokens[closeIndex] === '[') depth++;
+        else if (tokens[closeIndex] === ']') depth--;
+        if (depth > 0) closeIndex++;
+      }
+
+      if (depth !== 0) {
+        throw new Error("Несбалансированные квадратные скобки");
+      }
+
+      let arrayNameIndex = openIndex - 1;
+      let arrayName = '';
+      
+      while (arrayNameIndex >= 0 && tokens[arrayNameIndex] !== '[' && tokens[arrayNameIndex] !== ']' && 
+             tokens[arrayNameIndex] !== '+' && tokens[arrayNameIndex] !== '-' && 
+             tokens[arrayNameIndex] !== '*' && tokens[arrayNameIndex] !== '/') {
+        arrayName = tokens[arrayNameIndex] + arrayName;
+        arrayNameIndex--;
+      }
+      arrayName = arrayName.trim();
+
+      const indexTokens = tokens.slice(openIndex + 1, closeIndex);
+      const index = this.evaluateTokens([...indexTokens]);
+
+      const arrayStartIndex = arrayNameIndex + 1;
+      tokens.splice(arrayStartIndex, closeIndex - arrayStartIndex + 1, this.getArrayValue(arrayName, index));
+    }
 
     while (tokens.includes('(')) {
       const openIndex = tokens.lastIndexOf('(');
@@ -546,6 +560,20 @@ export class Interpreter {
     }
 
     return result;
+  }
+
+  getArrayValue(arrayName, index) {
+    if (!this.memory.hasOwnProperty(arrayName)) {
+      return 0;
+    }
+
+    const array = this.memory[arrayName];
+    if (!Array.isArray(array)) {
+      return 0;
+    }
+
+    const value = array[index];
+    return value !== undefined ? value : 0;
   }
 
   getTokenValue(token) {
