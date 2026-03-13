@@ -148,19 +148,5 @@ export function CoutBlock({id,data}){
         </BaseBlock>
     )
 }
-export function ArifmeticBlock({id,data}){
-    const {setNodes} = useReactFlow();
-    const parametr = data.parameters;
-    const change = (changeObject)=> setNodes((prev) => prev.map((n) => (n.id === id ? {...n,data: {...n.data,parameters: {...parametr,...changeObject}}}: n)));
-    return (
-        <BaseBlock title="Арифм.Операция">
-            <div className="row">
-                <span>Операция:</span>
-                <input value={parametr.operation ?? ""} onChange={(element)=> change({operation: element.target.value})}/>
-            </div>
-            <Handle type="target" position={Position.Left}/>
-            <Handle type="source" position={Position.Right}/>
-        </BaseBlock>
-    )
-}
+
 

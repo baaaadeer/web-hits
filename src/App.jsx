@@ -24,7 +24,6 @@ export default function App() {
       forBl: ForBlock,
       array: ArrayBlock,
       cout: CoutBlock,
-      arifmetic: ArifmeticBlock,
     }),
     []
   );
@@ -51,8 +50,6 @@ export default function App() {
     if (type==="forBl") parameters = {variable: "i", endCondition: "i<100", step: "i+=1"};
     if (type==="array") parameters = {name: "a",len: "", elements: ""};
     if (type==="cout") parameters = {};
-    if (type==="arifmetic") parameters ={operation: "+"};
-
     const newNode = {
       id: crypto.randomUUID(),
       type,
