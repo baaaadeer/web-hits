@@ -22,7 +22,7 @@ export function getBubbleSortBlocks() {
     });
   }
 
-  const arrayNode = createNode("array", { name: "a", len: "5", elements: "5, 2, 8, 1, 9" }, 100, 50);
+  const arrayNode = createNode("array", { name: "a", length: "6", elements: "5, 2, 8, 1, 9" }, 100, 50);
   const nNode = createNode("assign", { target: "n", value: "5" }, 100, 150);
   const forI = createNode("forBl", { variable: "i=0", endCondition: "i<n-1", step: "i+=1" }, 100, 250);
   const forJ = createNode("forBl", { variable: "j=0", endCondition: "j<n-i-1", step: "j+=1" }, 100, 350);

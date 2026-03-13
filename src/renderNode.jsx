@@ -133,7 +133,7 @@ export function ArrayBlock({id,data}){
             </div>
             <div className="row">
                 <span>Длина</span>
-                <input value={parametr.len ?? ""} onChange={(element)=> change({len: element.target.value})} placeholder="0"/>
+                <input value={parametr.length ?? ""} onChange={(element)=> change({length: element.target.value})} placeholder="0"/>
             </div>
             <div className="row">
                 <span>Элементы</span>

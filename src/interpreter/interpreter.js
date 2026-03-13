@@ -353,7 +353,7 @@ export class Interpreter {
 
   handleArray(data) {
     const name = data.name;
-    const sizeRaw = data.size || data.length || '5';
+    const sizeRaw = data.size || data.length;
     const elementsRaw = data.elements || '';
 
     if (!name) throw new Error("Имя массива не указано");
