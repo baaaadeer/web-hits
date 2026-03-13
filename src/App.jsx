@@ -108,9 +108,6 @@ export default function App() {
         <div className="block" onClick={()=>addBlock("cout")}>
           Вывод
         </div>
-        <div className="block" onClick={()=>addBlock("arifmetic")}>
-          Арифм.Операция
-        </div>
 
         
         <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>
