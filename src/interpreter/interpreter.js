@@ -149,6 +149,10 @@ export class Interpreter {
         throw new Error(`'${arrayName}' не является массивом`);
       }
 
+      if (index < 0 || index >= array.length) {
+        throw new Error(`Выход за границы массива '${arrayName}': индекс ${index}, размер ${array.length}`);
+      }
+
       array[index] = value;
       return;
     }
@@ -349,14 +353,28 @@ export class Interpreter {
 
   handleArray(data) {
     const name = data.name;
+    const sizeRaw = data.size || data.length || '5';
     const elementsRaw = data.elements || '';
 
     if (!name) throw new Error("Имя массива не указано");
 
-    const elements = elementsRaw
-      .split(/[,\s]+/)
-      .filter(el => el.trim() !== '')
-      .map(el => this.evaluateExpression(el.trim()));
+    const size = this.evaluateExpression(sizeRaw);
+
+    const elements = [];
+    if (elementsRaw && elementsRaw.trim() !== '') {
+      const initValues = elementsRaw
+        .split(/[,\s]+/)
+        .filter(el => el.trim() !== '')
+        .map(el => this.evaluateExpression(el.trim()));
+      
+      for (let i = 0; i < size; i++) {
+        elements[i] = initValues[i] !== undefined ? initValues[i] : 0;
+      }
+    } else {
+      for (let i = 0; i < size; i++) {
+        elements[i] = 0;
+      }
+    }
 
     this.memory[name] = elements;
   }
@@ -644,6 +662,10 @@ export class Interpreter {
       return 0;
     }
 
+    if (index < 0 || index >= array.length) {
+      throw new Error(`Выход за границы массива '${arrayName}': индекс ${index}, размер ${array.length}`);
+    }
+
     const value = array[index];
     return value !== undefined ? value : 0;
   }
@@ -690,6 +712,10 @@ export class Interpreter {
       const array = this.memory[arrayName];
       if (!Array.isArray(array)) {
         return 0;
+      }
+
+      if (index < 0 || index >= array.length) {
+        throw new Error(`Выход за границы массива '${arrayName}': индекс ${index}, размер ${array.length}`);
       }
 
       const value = array[index];
