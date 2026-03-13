@@ -22,7 +22,7 @@ export function getBubbleSortBlocks() {
     });
   }
 
-  const arrayNode = createNode("array", { name: "a", elements: "5, 2, 8, 1, 9" }, 100, 50);
+  const arrayNode = createNode("array", { name: "a", len: "5", elements: "5, 2, 8, 1, 9" }, 100, 50);
   const nNode = createNode("assign", { target: "n", value: "5" }, 100, 150);
   const forI = createNode("forBl", { variable: "i=0", endCondition: "i<n-1", step: "i+=1" }, 100, 250);
   const forJ = createNode("forBl", { variable: "j=0", endCondition: "j<n-i-1", step: "j+=1" }, 100, 350);
@@ -43,9 +43,6 @@ export function getBubbleSortBlocks() {
   connect(ifCompare.id, tempAssign.id, "true");
   connect(tempAssign.id, swap1.id);
   connect(swap1.id, swap2.id);
-  connect(swap2.id, forJ.id);
-  connect(ifCompare.id, forJ.id, "false");
-  connect(forJ.id, forI.id, "exit");
   connect(forI.id, out0.id, "exit");
   connect(out0.id, out1.id);
   connect(out1.id, out2.id);

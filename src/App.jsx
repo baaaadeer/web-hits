@@ -1,7 +1,7 @@
 import "./App.css";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ReactFlow, Background, Controls, MiniMap, useNodesState, useEdgesState, addEdge } from "@xyflow/react";
-import { VariableBlock, AssignBlock, IfBlock,WhileBlock,ForBlock,ArrayBlock,CoutBlock,ArifmeticBlock} from "./renderNode";
+import { VariableBlock, AssignBlock, IfBlock,WhileBlock,ForBlock,ArrayBlock,CoutBlock} from "./renderNode";
 import { runCode } from "./interpreter/interpreter";
 import { getBubbleSortBlocks } from "./examples/bubbleSort";
 
@@ -48,7 +48,7 @@ export default function App() {
     if (type === "operatorIf") parameters = {expression: ""};
     if (type==="whileBl") parameters = {condition: ""};
     if (type==="forBl") parameters = {variable: "i", endCondition: "i<100", step: "i+=1"};
-    if (type==="array") parameters = {name: "a",len: "", elements: ""};
+    if (type==="array") parameters = {name: "a",lenght: "", elements: ""};
     if (type==="cout") parameters = {};
     const newNode = {
       id: crypto.randomUUID(),

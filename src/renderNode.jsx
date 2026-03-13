@@ -108,7 +108,16 @@ export function ForBlock({id,data}){
                 <input value={parametr.step ?? ""} onChange={(element)=> change({step: element.target.value})} placeholder="i=0"/>
             </div>
             <Handle type="target" position={Position.Left}/>
-            <Handle type="source" position={Position.Right}/>
+            <Handle
+                type="source"
+                id="body"
+                position={Position.Right}
+                style={{ top: "30%", background: "green" }}/>
+            <Handle
+                type="source"
+                id="exit"
+                position={Position.Right}
+                style={{ top: "70%", background: "red" }}/>
         </BaseBlock>
     )
 }
